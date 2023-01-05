@@ -1,0 +1,198 @@
+					|-------Born2beRoot-------|
+						THIS IS FOR DEBIAN
+1 Part:		VM Creation 
+1- Go to https://www.debian.org/CD/netinst/  and get this version amd64
+2- open oracle
+3- Select New
+4- write the name that you want
+5- Machine folder - your VM must be created in goinfre/VirtualBox VMs(you have to creat the VirtualBox VMs)
+6- Type - Linux
+7- Version - Debian(64-bit)
+8- RAM - 1024
+9- Hard disk - Create a virtual hard disk now
+10- Hard disk file type - VDI
+11- Storage on physical hard disk - fixe size
+12- File location and size - your location must be this /goinfre/VirtualBox VMs/nameofyourvm/nameofyourvm.vdi
+	size i left 8GB
+13- Select settings -> Storage -> Empty after look to Attributes and select the tiny disk and put the version you downloaded before all this
+14- Press ok and start your VM
+
+2 Part:	VM Installation
+1- Select Install
+2- Language -> English
+3- Location -> other -> Portugal
+4- locales -> US(their isn't lisbon or london)
+5- Keyboard -> American English
+6- Just wait
+7- Network -> must write your user that you use to login on intra and at the end 42(Ex: myuser42)
+8- Domain leave empty
+9- write a decent pass!!!(if you want to see waht you wrote use space to select the show password)
+10- write your pass again
+11- user you can pust you intra login
+12- Username -> i put my intra login
+13- Again a decent pass!!
+14- write the pass again
+15- Time zone -> Lisbon
+16- wait a bit
+17 - On this part you have 2 options 
+	First - you can do likethis -> Guided - Use entire disk and set up encrypted LVM ->
+-> SCSIX (0,0,0) (sda) - 8.6 GB ATA VBOX HARDDISK -> separate /home partition ->
+-> yes. Wait.
+Enter encryption passphrase twice -> 8.1G or just max ->
+-> Finish partitioning and write changes to disk -> yes. Wait.(this is without bonus)
+
+	Second - Bonus you have to create the partition manualy if you want the bonus do this now its easier
+For bonus - Select manual
+		  - SCSI1 (0,0,0) (sda) - 8.6 GB ATA VBOX HARDDISK
+		  - yes
+		  - pri/log 8.6 GB FREE SPACE
+		  - Create a new partition (CRANP next)
+		  - 500M 
+		  - Primary
+		  - Beginning
+		  - Mount point
+		  - Boot
+		  - Done setting up the partition(DSUP)
+		  - pri/log
+		  - CRANP
+		  - 8.1 GB or max
+		  - logical
+		  - Mount point select Do not mount it
+		  - DSUP
+		  - Configure encrypted volumes
+		  - yes
+		  - Create encrypted volumes
+		  - select /dev/sda5
+		  - Done setting up the partition (DSUTP)
+		  - Finish 
+		  - yes
+		  - wait
+		  - Enter the disk pass twice
+		  - Configure the logical volume manager
+		  - yes
+		  - Create volume groupe
+		  - LVMGroup
+		  - Select /dev/mapper/sda5_crypt
+		  - Continue
+		  - Create logical volume (CLV)
+		  - LVMGroup
+		  - root
+		  - 2G
+		  - CLV
+		  - swap
+		  - 1G
+		  - CLV
+		  - LVMGroup
+		  - home
+		  - 1G
+		  - CLV
+		  - LVMGroup
+		  - var 
+		  - 1G
+		  - CLV
+		  - LVMGroup
+		  - srv
+		  - 1G 
+		  - CLV
+		  - LVMGroup
+		  - tmp
+		  - 1G 
+		  - CLV
+		  - LVMGroup 
+		  - var-log
+		  - the rest of the space
+		  - Finish
+		  - Now its time to give each partition their job
+		  - select the first 998.2(under home)
+		  - Use as (UA)
+		  - EXT4 jfl
+		  - Mount point: /home
+		  - DSUP
+		  - under root 
+		  - UA 
+		  - EXT4
+		  - MU -> /
+		  - DSUP
+		  - under srv
+		  - UA
+		  - EXT4
+		  - MP -> /srv
+		  - DSUP
+		  - under swap
+		  - UA 
+		  - swap area
+		  - DSUP
+		  - under tmp 
+		  - UA 
+		  - EXT4
+		  - MU -> /tmp 
+		  - DSUP
+		  - under var 
+		  - UA 
+		  - EXT4 
+		  - MU -> /var
+		  - under var-log
+		  - UA
+		  - EXT4
+		  - MU -> manually -> /var/log 
+		  - DSUP
+		  - Finish partitioning and write changes to disk
+		  - yes
+		  - And now just chill
+		  - Configure the package manager -> no
+		  - Select where your campus is located
+		  - deb.debian.org (doesn't matter)
+		  - Leave proxy info field empty and proceed
+		  - Participate in the package usage survey? -> NO!
+		  - Soft seclection: remove stars from ssh/standart system utilities/etc. (space)
+			GRUB - YES! -> /dev/sda
+			Installlation complee -> continue
+
+3 part: Sudo Installation
+1- After you log in, write this su - 
+2- when you in root write this apt install sudo
+3- then reboot and log in again
+
+4 part: Adding users
+1- write su -
+2- while in root write usermod -aG sudo yourusername
+	 -a is a shortcut for --append: It means append the group to the list of groups the user belongs to!
+	 -G is a shortcut for --groups: It tells usermod that the next argument is a group. 
+	  Note that you need to use a capital -G here because we don’t want to modify the user’s primary group but the list of supplemental groups the user belongs to.
+3- check if user is in sudo group getent group sudo
+4- Add group user42 -> groupadd user42
+5- Add user to group user42 -> usermod -aG user42 yourusername
+
+5 part: Installing ssh
+1- write exit so you leave su -
+2- sudo apt install openssh-server
+3- this is to check if ssh service is running sudo systemctl status ssh
+4- go to /etc/ssh, sudo nano sshd_config and edit #Port22 to Port4242 and 
+	#PermitRootLogin prohibit-password to PermitRootLogin no, save and exit
+5- sudo nano /etc/ssh/ssh_config -> etid #Port22 to Port4242
+6- sudo service ssh status
+8- Install UFW(Unsophisticade firewall) -> sudo apt install ufw
+9- sudo ufw enable
+10- sudo ufw allow 4242
+11- sudo service ssh restart
+12- sudo ufw status(it can only be port 4242 their)
+
+6 part: Configuring sudo
+1- sudo touch /etc/sudoers.d/sudoconfig
+2- sudo mkdir /var/log/sudo (sudo log files)
+3- sudo nano /etc/sudoers.d/sudoconfig
+	Defaults      passwd_tries=3                            
+	Defaults      badpass_message="Incorrect password"        <- you can set your
+	Defaults      log_input,log_output                         own message here
+	Defaults      iolog_dir="/var/log/sudo"                 
+	Defaults      requiretty                                
+	Defaults      secure_path="that/long/paths/from/subject"
+
+7 part: Strong Password policy
+1- sudo nano /etc/login.defs
+	PASS_MAX_DAYS    99999 -> PASS_MAX_DAYS    30 
+	PASS_MIN_DAYS    0     -> PASS_MIN_DAYS    2
+2- sudo apt install libpam-pwquality
+3- sudo nano /etc/pam.d/common-password
+4- change password for user -> passwd
+5- change password for root -> sudo password
