@@ -239,3 +239,27 @@ For bonus - Select manual
 	total_ram=$(free -m | grep Mem | awk '{print $2}')
 	ram_usage_percent=$(free -m | grep Mem | | awk '{printf("%.2f", $3/$2*100}')
 	
+	Disk free
+	To see the disk space run the command "df", to show MB use the flag "-m" and to see in GB
+	use 2 flags "-Bg".
+	What we want it starts with "/dev/ so to get only those lines we use " grep '^/dev/', "^" this means where the 
+	beginning of the line starts. 
+	those partition(lines) are out home, boot and dev, but we cant acess the boot partition because you can add or delete
+	anything of that. so to take the line that we want use "grep -v '/boot$'", "-v" is flag to deselect the line and de "$"
+	is to select the end off the line, so we are saying to take out the line that ends with boot.
+	So we nee to print a sum of 3 lines to do i have a variable called (fdisk) on this variable im going to add
+	the lines of the same column "awk '{fdisk += $4} to get the result we need to add "awk END {print fdisk}.
+	The resusl is this "df -Bm | grep '^/dev/' | grep -v '/boot$' | awk '{fdisk += $4} END {print fdisk}'"
+
+	To get the total disk space its almost the same :
+	"df -Bg | grep '^/dev/' |grep -v '/boot$' | awk '{tdisk += $2} END {print tdisk}'"
+
+	For the disk usage :
+	"df -Bm | grep '^/dev/' | grep -v '/boot$' | awk '{fdisk += $3} {tdisk += $2} END 
+	{printf("%.2f"), fdisk/tdisk*100}'"
+
+	CPU load :
+	To get the CPU usage the command "top" gives us the cpu % and using the flag "-b"
+
+
+
