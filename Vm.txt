@@ -233,7 +233,8 @@ For bonus - Select manual
 	We only want the Mem row so we use grep Mem, what we want is on the 4th column, so to represent that we use $4 and to show the value we use awk '{print $4}'
 	What akw is?
 	Awk is a scripting language used for manipulating data and generating reports. The awk command programming language requires no compiling and allows the user to use variables, numeric functions, string functions, and logical operators. 
-	Awk is a utility that enables a programmer to write tiny but effective programs in the form of statements that define text patterns that are to be searched for in each line of a document and the action that is to be taken when a match is found within a line. Awk is mostly used for pattern scanning and processing. It searches one or more files to see if they contain lines that matches with the specified patterns and then perform the associated actions. 
+	Awk is a utility that enables a programmer to write tiny but effective programs in the form of statements that define text patterns that are to be searched for in each line of a document and the action that is to be taken when a match is found within a line. Awk is mostly used for pattern scanning and processing. It searches one or more files to see if they contain lines that matches with the specified 
+	patterns and then perform the associated actions. 
 
 	Awk is abbreviated from the names of the developers – Aho, Weinberger, and Kernighan. 
 	total_ram=$(free -m | grep Mem | awk '{print $2}')
@@ -260,6 +261,50 @@ For bonus - Select manual
 
 	CPU load :
 	To get the CPU usage the command "top" gives us the cpu % and using the flag "-b"
+	to start in batch mode, use the flag -n to specify the max number to show
+	If you execute the command top he will show alot of lines so lets get the one we want by using
+	"grep '^%Cpu' and the values are in the column $2
+	the result is this 
+	"top -bn1 | grep '^$Cpu' | awk '{printf("%.2f%%"), $2}'"
+
+	Last reboot :
+	To this one we use the command "who" this command prints out the information about users who
+	are currently logged in and the flage "-b" shows the time of the last system boot.
+	The information that we want are in column $3 and $4, we need to print both columns so just put " "
+	between them.
+	the result is this
+	"who -b | awk '{print $3 " " $4}'"
+
+	LVM active
+	To check if LVM is active run the command "lsblk" and just get the lvm part by using "grep lvm" 
+	we just need the column $1
+	the result is this 
+	"lsblk | grep lvm | awk '{if ($1) {print "yes";exit;} else {print "no";exit}}'"
+
+	Number of connections
+	To check how many connections are active to your server use command "ss" to display all the information
+	and the flag -t to just see the tcp connections, to see the active connections use "grep ESTAB" and 
+	to print the nu,ber of line use "wc" it will print a newline, word and byte counts for file and the flag
+	"-l" just prits a newline
+	the result is this 
+	"ss -t | grep ESTAB | wc -l 
+
+	Number of users connected
+	To check how many users are connected use command "who" and cut until you find the first space
+	using "cut -d " "" , the flag "-d" is delimiter instead of TAB for field delimite, after use flag 
+	"-f" sot get only these and add 1
+	Use the command sort with the flage "-u" to output the first time its run and then doesnt repeat
+	count the number of line by using "wc -l"
+	the result is 
+	"who | cut -d " " -f 1 | sort -u | wc -l"
+
+	IPv4 & MAC(Media Access Control)
+	to see the ip just use hostname -I 
+	For the MAC we can use "ip" to show/ ,amipulate routing , networks devices
+	interfaces and tunnels, command "link show" shows the network device,
+	The lines we want are the one that have ether, use "grep ether" to get MAC we just need the column $2
+	
+	
 
 
 

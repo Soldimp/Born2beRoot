@@ -1,0 +1,149 @@
+Born2BeRoot
+
+Debian(Bullseye) vs Rocky
+
+Debian still supports 32 bits rocky doesnt
+
+Debian you can install the enviroment you want on rocky you have a default one
+
+Debian is based on ubuntu operating system and rocky is based on RHEL(Red Hat Entreprise Linux) 
+
+Debian is more for indivitual work and rocky is more for company's
+
+Debian packet is nftables and rocky is iptables the differences are :
+
+nftables uses a new syntax. The iptables command line tool uses a getopt_long()-based parser where keys are always preceded by double minus, eg. --key or one single minus, eg. -p tcp. In contrast, nftables uses a compact syntax inspired by tcpdump.
+
+Tables and chains are fully configurable. iptables has multiple pre-defined tables and base chains, all of which are registered even if you only need one of them. There have been reports of even unused base chains harming performance. With nftables there are no pre-defined tables or chains. Each table is explicitly defined, and contains only the objects (chains, sets, maps, flowtables and stateful objects) that you explicitly add to it. Now you register only the base chains that you need. You choose table and chain names and netfilter hook priorities that efficiently implement your specific packet processing pipeline.
+
+A single nftables rule can take multiple actions. 
+
+Ex: nft add rule ip filter input ip protocol vmap { tcp : jump tcp-chain, udp : jump udp-chain, icmp : jump icmp-chain }
+
+Debian uses AppArmor and rocky uses SELinux
+
+AppArmour is  security module that allows the system administrator to restrict programs' capabilities with per-program profiles. Profiles can allow capabilities like network access, raw socket access, and the permission to read, write, or execute files on matching paths.
+
+Debian(Bullseye) is supported by exFat filesystem and rocky is not you have to install the package
+
+Debian use apt and rocky uses Yum(Yellowdog Updater, Modified) or DNF(Dandified Yum)
+
+Apt-get being a lower level package manager is restricted only to command line, while Aptitude being a higher-level tool has a default text-only interactive interface along with option of command-line operation by entering required commands.
+
+Apt(Advanced packaging tool) vs Yum 
+APT is a Debian and Ubuntu-based distros, Yum is Red-Hat-based distros, sudo apt upgrade command is used to upgrade all packages to the lastest stable version and yum update just upgrades the installed to the lastest versions
+
+
+
+sudo ufw status
+
+sudo service ssh status
+
+What SSH is and the value of using it
+
+SSH provides password or public-key based authentication and encrypts connections between two network endpoints. ... In addition to providing strong encryption, SSH is widely used by network administrators to manage systems and applications remotely, deliver software patches, or execute commands and move files.
+
+check ports - cd /etc/ssh sudo nano sshd_config
+sudo nano /etc/ssh/ssh_config
+
+User 
+getent group
+check user in groups:
+
+getent group user42
+getent group sudo
+
+
+ sudo usermod -aG user42 your_username
+ sudo usermod -aG evaluating your_new_username
+
+-a is a shortcut for --append: It means append the group to the list of groups the user belongs to!
+	 -G is a shortcut for --groups: It tells usermod that the next argument is a group. 
+	  Note that you need to use a capital -G here because we don’t want to modify the user’s primary group but the list of supplemental groups the user belongs to.
+
+sudo nano /etc/login.defs
+sudo nano /etc/pam.d/common-password
+	Find password requisite pam_quality.so retry=3 and write this 
+	ucredit=-1(this means you need at least on upper-case letter in pw)
+	lcredit=-1(this means you need at least one lower-case in pw)
+	dcredit=-1(this means you need at least one digit i pw)
+	minlen=10(minimum length of pw)
+	maxrepeat=3(this means you have a max of consecutive identical chars in pw)
+	usercheck=0(this means if password contains the username)
+	difok=7(this means you are going to set a minimum number of chars thas has to do be different from the old pw)
+	enforce_for_root(this means you need to reboot after changing pw)
+
+Advantages of password policy harder to be hack by using brute force and more secure overall
+
+Disadvantages very long passwords,  organizations have found that as complexity requirements increase, users will have worse password hygiene. If you ask users to add numbers and special characters, they will likely alter their existing easy-to-remember password, and create a similar password with 1 or 2 extra characters.
+
+
+Hostname
+check hostname - hostnamectl
+change hostname - sudo nano /etc/hosts
+
+Partitions 
+lsblk
+
+LVM (Logical volume management) 
+ It is a system of managing logical volumes, or filesystems, that is much more advanced and flexible than the traditional method of partitioning a disk into one or more segments and formatting that partition with a filesystem. 
+
+A Volume Group is a named collection of physical and logical volumes. Typical systems only need one Volume Group to contain all of the physical and logical volumes on the system, and I like to name mine after the name of the machine. Physical Volumes correspond to disks; they are block devices that provide the space to store logical volumes. Logical volumes correspond to partitions: they hold a filesystem. Unlike partitions though, logical volumes get names rather than numbers, they can span across multiple disks, and do not have to be physically contiguous. 
+
+One of the biggest advantages LVM has is that most operations can be done on the fly, while the system is running.
+
+LVM can expand a partition while it is mounted, if the filesystem used on it also supports that ( like the usual ext3/4 ). When expanding a partition, gparted can only expand it into adjacent free space, but LVM can use free space anywhere in the Volume Group, even on another disk.
+
+Sudo
+su -
+apt install sudo
+
+ sudo usermod -aG sudo your_new_username
+
+cd /etc/sudoers.d 
+
+sudo visudo
+
+Require tty: (Why use tty? If some non-root code is exploited (a PHP script, for example), the requiretty option means that the exploit code won't be able to directly upgrade its privileges by running sudo.)
+
+UFW 
+sudo ufw status 
+
+sudo ufw status numbered
+sudo ufw allow 8080
+sudo ufw delete and the number
+
+SSH
+sudo service ssh status
+
+What SSH is and the value of using it
+
+SSH provides password or public-key based authentication and encrypts connections between two network endpoints. ... In addition to providing strong encryption, SSH is widely used by network administrators to manage systems and applications remotely, deliver software patches, or execute commands and move files.
+
+Script
+
+wall is a command-line that displays a message on the terminal of all loged-in users.
+	the message can be in terminal on the contents of a file
+The command uname -a is used to get the architecture, uname us used to print certain system information including kernel name, and the -a or all prints all information
+
+The command grep is a tool used to search for a string of characters in a specified file
+
+What akw is?
+	Awk is a scripting language used for manipulating data and generating reports. The awk command programming language requires no compiling and allows the user to use variables, numeric functions, string functions, and logical operators. 
+	Awk is a utility that enables a programmer to write tiny but effective programs in the form of statements that define text patterns that are to be searched for in each line of a document and the action that is to be taken when a match is found within a line. Awk is mostly used for pattern scanning and processing. It searches one or more files to see if they contain lines that matches with the specified patterns and then perform the associated actions. 
+
+What is cron
+
+Cron is a standard Unix utility that is used to schedule commands for automatic execution at specific intervals. For instance, you might have a script that produces web statistics that you want to run once a day automatically at 5:00 AM.
+
+-u 
+user Specifies the user whose crontab is to be viewed or modified. If this option is not given, crontab opens the crontab of the user who ran crontab. Note: using su to switch users can confuse crontab, so if you are running it inside of su, always use the -u option to avoid ambiguity.
+
+-e 	
+Edit the current crontab, using the editor specified in the environment variable VISUAL or EDITOR.
+
+"^" this means where the 
+	beginning of the line starts. 
+
+"$"
+	is to select the end off the line
